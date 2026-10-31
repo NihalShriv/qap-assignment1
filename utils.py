@@ -69,14 +69,11 @@ def von_neumann(rho):
 
 
 def partial_trace_np(rho, keep, dims):
-    n = len(dims)
     d_keep = int(np.prod([dims[i] for i in keep]))
-    trace_out = [i for i in range(n) if i not in keep]
-    d_total = int(np.prod(dims))
-    rho = rho.reshape(dims * 2)
-    for ax in sorted(trace_out, reverse=True):
-        rho = np.trace(rho, axis1=ax, axis2=ax + len(rho.shape) // 2)
-        rho = rho.reshape([d for i, d in enumerate(dims) if i not in trace_out[:trace_out.index(ax)+1]] * 2)
+    trace_out = sorted([i for i in range(len(dims)) if i not in keep], reverse=True)
+    rho = rho.reshape(list(dims) * 2)
+    for ax in trace_out:
+        rho = np.trace(rho, axis1=ax, axis2=ax + rho.ndim // 2)
     return rho.reshape(d_keep, d_keep)
 
 
@@ -101,5 +98,12 @@ if __name__ == "__main__":
 
     rho_dep = apply_kraus(rho0, kraus_depolarising(0.5))
     assert np.allclose(rho_dep, 0.5 * rho0 + 0.5 * np.eye(2) / 2, atol=1e-10)
+
+    ghz = np.zeros((8, 8), dtype=complex)
+    ghz[0, 0] = ghz[0, 7] = ghz[7, 0] = ghz[7, 7] = 0.5
+    reduced_1q = partial_trace_np(ghz, [0], [2, 2, 2])
+    assert np.allclose(reduced_1q, np.eye(2) / 2, atol=1e-10), "GHZ 1-qubit trace failed"
+    reduced_2q = partial_trace_np(ghz, [0, 1], [2, 2, 2])
+    assert abs(purity(reduced_2q) - 0.5) < 1e-10, "GHZ 2-qubit trace purity failed"
 
     print("utils.py self-check passed.")
