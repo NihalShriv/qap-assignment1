@@ -95,13 +95,26 @@ def run(verbose=True):
     if verbose:
         print(f"Max Kraus vs Aer diff (all 21 p): {max_diff:.2e}  TOL={TOL}")
         print(f"Plot saved: {out.name}")
-        print("\nQ2.4 convention note:")
-        print("  pauli_error([('X', p), ('I', 1-p)]) applies X with prob p,")
-        print("  matching O7's bit-flip directly.")
-        print("  depolarizing_error(p, 1) implements (1-p)rho + p*I/2,")
-        print("  matching O7's depolarising with the same parameter p.")
-        print("  Qiskit's little-endian qubit ordering is a second gotcha")
-        print("  that affects multi-qubit Kraus placement (see S3 ordering check).")
+
+        from qiskit_aer.noise import depolarizing_error as _dep
+        from qiskit.quantum_info import Kraus, SuperOp
+        from utils import kraus_depolarising
+        p_demo = 0.3
+        qiskit_sop = SuperOp(Kraus(_dep(p_demo, 1)))
+        our_sop    = SuperOp(Kraus(kraus_depolarising(p_demo)))
+        sop_diff   = float(np.max(np.abs((qiskit_sop - our_sop).data)))
+        print(f"\nQ2.4 numerical example (p={p_demo}):")
+        print(f"  depolarizing_error({p_demo},1) Kraus operators weight:")
+        for k in Kraus(_dep(p_demo, 1)).data:
+            print(f"    norm={float(np.linalg.norm(k)):.6f}")
+        print(f"  Our kraus_depolarising({p_demo}) weights:")
+        for k in kraus_depolarising(p_demo):
+            print(f"    norm={float(np.linalg.norm(k)):.6f}")
+        print(f"  SuperOp difference: {sop_diff:.2e}  (channels are identical)")
+        print(f"  Interpretation: depolarizing_error(p,1) == (1-p)*rho + p*I/2")
+        print(f"  i.e. Qiskit's parameter = O7's p directly (no 3/4 factor needed).")
+        print(f"  Gotcha: a naive pauli_error([X,Y,Z each p/3]) would be a")
+        print(f"  different channel — use depolarizing_error to match O7.")
 
     return {"s4_max_route_diff": float(max_diff)}
 

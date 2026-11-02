@@ -77,6 +77,10 @@ def partial_trace_np(rho, keep, dims):
     return rho.reshape(d_keep, d_keep)
 
 
+def qiskit_qubit_to_np_axis(qubit_index, n_qubits):
+    return n_qubits - 1 - qubit_index
+
+
 if __name__ == "__main__":
     rho0 = dm_pure([1, 0])
     assert abs(purity(rho0) - 1.0) < 1e-10

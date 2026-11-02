@@ -40,11 +40,11 @@ Then add one line after: what you actually saw and whether it matched.
 
 ### Bell state, trace out qubit 1
 **Before:** The reduced state should be I/2, purity = 0.5, entropy = 1 bit. Maximum mixedness because the full state is pure and maximally entangled. The information sits entirely in the correlations.
-**After:** _fill in_
+**After:** Matched. Reduced state = I/2, purity = 0.5, entropy = 1.0 bit. NumPy and Qiskit partial_trace agree to 1e-10.
 
 ### GHZ state, trace out one qubit
 **Before:** Reduced two-qubit state is (|00⟩⟨00| + |11⟩⟨11|)/2, purity exactly 0.5, entropy 1 bit. It is separable and only classically correlated. Tracing out two qubits gives I/2.
-**After:** _fill in_
+**After:** Matched. Two-qubit reduced state = diag(0.5, 0, 0, 0.5), purity = 0.5, entropy = 1.0 bit. One-qubit reduced state = I/2, purity = 0.5.
 
 ---
 
@@ -52,23 +52,23 @@ Then add one line after: what you actually saw and whether it matched.
 
 ### Bit-flip on |+⟩
 **Before:** |+⟩ is an eigenstate of X, so bit-flip leaves it unchanged. Purity stays at 1 for all p.
-**After:** _fill in_
+**After:** Matched. Purity = 1.0 for all 21 p values. Kraus and Aer agree to 4.4e-16.
 
 ### Bit-flip on |0⟩
 **Before:** Purity = (1+(1−2p)²)/2. Decreases from 1 at p=0 to 0.5 at p=0.5, then increases back to 1 at p=1 (clean bit flip).
-**After:** _fill in_
+**After:** Matched. Symmetric U-shape, minimum 0.5 at p=0.5, back to 1 at p=1.
 
 ### Dephasing on |+⟩
 **Before:** Dephasing shrinks the x-component of the Bloch vector: r_x → (1−2p)r_x. Purity = (1+(1−2p)²)/2, reaching 0.5 at p=0.5 and returning to 1 at p=1 (state becomes |−⟩).
-**After:** _fill in_
+**After:** Matched. Same U-shape as bit-flip on |0⟩, by symmetry of the Bloch sphere picture.
 
 ### Dephasing on |0⟩
 **Before:** |0⟩ is a Z eigenstate, so Z ρ Z = ρ. Dephasing leaves it completely unchanged. Purity stays at 1 for all p.
-**After:** _fill in_
+**After:** Matched. Purity = 1.0 for all 21 p values. Dephasing is the channel that leaves |0⟩ unchanged.
 
 ### Depolarising on |+⟩ and |0⟩
 **Before:** Depolarising shrinks the Bloch vector uniformly: r → (1−p)r. Purity = (1+(1−p)²)/2 for both states. Reaches 0.5 only at p=1 in the O7 convention.
-**After:** _fill in_
+**After:** Matched. Both states give identical purity curves, monotonically decreasing from 1 to 0.5. Max Kraus vs Aer diff across all 126 cases: 4.4e-16.
 
 ---
 
