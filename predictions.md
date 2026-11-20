@@ -82,12 +82,12 @@ Then add one line after: what you actually saw and whether it matched.
 ## L3 (fill in once instance.json is generated)
 
 ### S6 — Instance simulation (Person A)
-**Before:** _fill in after seeing the circuit_
-**After:** _fill in_
+**Before:** Instance 0986: 6 qubits, A = qubits 0-4, B = qubit 5, dephasing p = 0.121 after every gate. Without noise the global state is pure, so S(ρ) = 0, while S(ρ_A) = S(ρ_B) > 0 and at most 1 bit because B is a single qubit (Schmidt rank at most 2). With noise ρ becomes clearly mixed (S(ρ) of a few bits), and by Araki-Lieb S(ρ_A) stays within S(ρ_B) ≤ 1 bit of S(ρ). With noise, Araki-Lieb allows either sign: S(ρ_A) ≥ S(ρ) only if S(B|A) ≤ 0, i.e. if A-B entanglement still outweighs the noise on B, so we expect S(ρ_A) and S(ρ) within 1 bit of each other and are unsure of the sign. The Aer and Kraus routes should agree to about 1e-10.
+**After:** Noiseless: S(ρ) = 0, S(ρ_A) = 1 bit, purity(ρ_A) = 0.5. Noisy: purity = 0.111549021553, S(ρ) = 3.526117392457, S(ρ_A) = 3.553370440592, S(ρ_B) = 1. So S(ρ_A) > S(ρ) in both cases, but with noise only by 0.027 bit; the sign is settled by entanglement only just outweighing the noise. Aer vs Kraus max difference 9.7e-17.
 
 ### S7 — Instance trajectories (Person A)
-**Before:** Error vs N should follow ~1/√N on a log-log plot (slope ≈ −0.5).
-**After:** _fill in_
+**Before:** Error vs N should follow ~1/√N on a log-log plot (slope ≈ −0.5). Every single trajectory is pure, so the purity of the N-trajectory average should start near 1 and fall towards the exact value, overshooting it by about (1 − γ)/N.
+**After:** Matched. Fitted slope −0.520 over N = 16 to 8192, close to −0.5, and the errors follow √((1−γ)/N). At N = 8192 the trajectory purity is 0.111427 vs exact 0.111549, a difference of −1.2e-4, well inside the standard error of 1.6e-3; the (1−γ)/N bias of 1.1e-4 is too small to see at this N. Cost: 234 µs per trajectory.
 
 ### S8 — Scaling benchmark (Person B)
 **Before:** Statevector memory scales as 2ⁿ, density-matrix as 4ⁿ. Density matrix becomes significantly slower around n=4 or 5.
