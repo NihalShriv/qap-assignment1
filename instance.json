@@ -1,0 +1,108 @@
+{
+  "code": "0986",
+  "n": 6,
+  "gates": [
+    {
+      "g": "S",
+      "q": [
+        1
+      ]
+    },
+    {
+      "g": "X",
+      "q": [
+        4
+      ]
+    },
+    {
+      "g": "X",
+      "q": [
+        3
+      ]
+    },
+    {
+      "g": "H",
+      "q": [
+        2
+      ]
+    },
+    {
+      "g": "H",
+      "q": [
+        3
+      ]
+    },
+    {
+      "g": "H",
+      "q": [
+        4
+      ]
+    },
+    {
+      "g": "CNOT",
+      "q": [
+        4,
+        0
+      ]
+    },
+    {
+      "g": "H",
+      "q": [
+        1
+      ]
+    },
+    {
+      "g": "CNOT",
+      "q": [
+        3,
+        4
+      ]
+    },
+    {
+      "g": "S",
+      "q": [
+        2
+      ]
+    },
+    {
+      "g": "CNOT",
+      "q": [
+        2,
+        0
+      ]
+    },
+    {
+      "g": "S",
+      "q": [
+        5
+      ]
+    },
+    {
+      "g": "X",
+      "q": [
+        1
+      ]
+    },
+    {
+      "g": "CNOT",
+      "q": [
+        2,
+        5
+      ]
+    }
+  ],
+  "noise": {
+    "channel": "dephasing",
+    "p": 0.121,
+    "applied": "after every gate, an independent single-qubit channel on each qubit the gate acted on (both qubits for a CNOT)"
+  },
+  "subsystem_A": [
+    0,
+    1,
+    2,
+    3,
+    4
+  ],
+  "traj_seed": 1103068787,
+  "fingerprint": "cc999486802f"
+}
