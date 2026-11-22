@@ -1,36 +1,3 @@
-"""
-S8 (Level 3): scaling benchmark, Aer statevector vs density-matrix.
-
-Circuit family: DEPTH layers of Ry/Rz on every qubit plus a brick-wall of CX, so the
-depth is fixed and the gate count grows only linearly with n. Four configurations:
-
-  statevector            noiseless, 1 shot
-  density_matrix         noiseless, 1 shot
-  statevector_noisy      noisy,     1 shot   = the cost of ONE trajectory  (for A3.3)
-  density_matrix_noisy   noisy,     1 shot   = exact noisy evolution
-
-Method:
-  * every (configuration, n) runs in its OWN subprocess, so peak memory is not
-    polluted by earlier, larger runs;
-  * in the subprocess: one warm-up run on a 2-qubit circuit (excluded), then
-    `repeats` timed runs; the median is reported;
-  * wall time = Python-side run()+result(); aer time = Aer's own result.time_taken.
-    The gap between them is simulator/interface overhead (A3.2, Q3.3);
-  * memory = peak RSS of the worker, sampled by the PARENT every 5 ms while the worker
-    runs, minus the worker's own baseline after imports and warm-up; shown next to the
-    theoretical state size 16*2^n (statevector) or 16*4^n (density matrix) bytes;
-  * each ladder of n stops by itself when the next size will not fit in memory or
-    the previous size was slower than the time cap ("largest size you can run").
-
-python l3_s8_scaling.py                       quick ladder (about a minute)
-python l3_s8_scaling.py --full                report-grade ladder (larger n, more repeats)
-python l3_s8_scaling.py --full --threads 1    same, single-threaded: separates the
-                                              algorithm's cost from Aer's multi-threading
-
-Writes s8_scaling.json / .png for --full (s8_scaling_t1.* with --threads 1). A quick run writes
-s8_scaling_quick*.json / .png instead, so it can never overwrite the report-grade full data. run() returns {} (S8 has no key in the
-results.json schema).
-"""
 import argparse
 import json
 import os
@@ -44,9 +11,9 @@ import numpy as np
 
 HERE = Path(__file__).resolve().parent
 
-DEPTH = 10                  # fixed number of layers for every n
+DEPTH = 10
 CIRCUIT_SEED = 7
-NOISE_P = 0.01              # depolarising probability on every gate (benchmark noise)
+NOISE_P = 0.01
 CONFIGS = ["statevector", "density_matrix", "statevector_noisy", "density_matrix_noisy"]
 
 QUICK = dict(n_cap={"statevector": 18, "statevector_noisy": 18,
@@ -55,12 +22,11 @@ QUICK = dict(n_cap={"statevector": 18, "statevector_noisy": 18,
 FULL = dict(n_cap={"statevector": 28, "statevector_noisy": 28,
                    "density_matrix": 14, "density_matrix_noisy": 14},
             repeats=5, time_cap=60.0)
-MEM_FRACTION = 0.5          # never plan a run needing more than this share of free RAM
-MEM_SAFETY = 1.4            # measured: peak = 1.0 x state size + ~2 MiB, so 1.4 is a safe margin
-FIT_MIN_TIME = 0.1          # s: time fits use only sizes slower than this (above the thread ramp-up)
+MEM_FRACTION = 0.5
+MEM_SAFETY = 1.4
+FIT_MIN_TIME = 0.1
 
 
-# ----------------------------------------------------------------- circuit / noise
 def build_circuit(n, depth=DEPTH, seed=CIRCUIT_SEED):
     from qiskit import QuantumCircuit
     rng = np.random.default_rng(seed)
@@ -93,19 +59,16 @@ def rss_bytes():
 
 
 
-# --------------------------------------------------------------------- worker
 def worker(config, n, repeats, threads=0):
-    """Runs in a fresh subprocess; prints one 'RESULT {json}' line.
-    threads = 0 lets Aer use all cores (its default); threads = 1 gives single-thread timings."""
     from qiskit_aer import AerSimulator
     method = "density_matrix" if config.startswith("density_matrix") else "statevector"
     noisy = config.endswith("_noisy")
     extra = {"max_parallel_threads": threads} if threads else {}
     sim = AerSimulator(method=method, noise_model=make_noise() if noisy else None, **extra)
 
-    sim.run(build_circuit(2), shots=1).result()            # warm-up (not timed)
+    sim.run(build_circuit(2), shots=1).result()
     qc = build_circuit(n)
-    base = rss_bytes()                                     # RSS after imports + warm-up
+    base = rss_bytes()
 
     walls, aers = [], []
     for _ in range(repeats):
@@ -123,12 +86,6 @@ def worker(config, n, repeats, threads=0):
 
 
 def run_one(config, n, repeats, timeout, threads=0, poll=0.005):
-    """Start the worker subprocess and sample ITS resident memory from out here.
-
-    Sampling from inside the worker does not work: Aer's C++ simulation holds the GIL,
-    so a sampler thread in the same process cannot run during the simulation. And
-    ru_maxrss is useless because a child inherits its parent's peak across exec.
-    """
     import psutil
     cmd = [sys.executable, str(Path(__file__).resolve()), "--worker", config, str(n), str(repeats), str(threads)]
     proc = subprocess.Popen(cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True, cwd=HERE)
@@ -153,7 +110,6 @@ def run_one(config, n, repeats, timeout, threads=0, poll=0.005):
     return None, (err.strip().splitlines() or ["no output"])[-1]
 
 
-# --------------------------------------------------------------------- ladder
 def ladder(config, n_cap, repeats, time_cap, threads=0, verbose=True):
     import psutil
     rows = []
@@ -184,7 +140,6 @@ def ladder(config, n_cap, repeats, time_cap, threads=0, verbose=True):
 
 
 def fit_slope(ns, ys):
-    """(slope, intercept) of log2(y) against n, or None if fewer than 2 usable points."""
     ns, ys = np.asarray(ns, float), np.asarray(ys, float)
     ok = ys > 0
     if ok.sum() < 2:
@@ -194,9 +149,6 @@ def fit_slope(ns, ys):
 
 
 def fit_window(rows):
-    """Sizes used for the time fit: those slower than FIT_MIN_TIME, so that fixed
-    overhead and the multi-thread ramp-up (where time barely grows with n) are left out.
-    Falls back to the last three sizes when fewer than three qualify."""
     sel = [r for r in rows if r["wall_median_s"] >= FIT_MIN_TIME]
     return sel if len(sel) >= 3 else rows[-3:]
 
@@ -207,7 +159,7 @@ def run(full=False, outdir=None, verbose=True, threads=0, repeats=None):
     cfg = dict(FULL if full else QUICK)
     if repeats:
         cfg["repeats"] = repeats
-    suffix = ("" if full else "_quick") + (f"_t{threads}" if threads else "")   # quick never overwrites full data
+    suffix = ("" if full else "_quick") + (f"_t{threads}" if threads else "")
     if verbose:
         print(f"S8 ({'full' if full else 'quick'}): depth={DEPTH}, noise p={NOISE_P}, repeats={cfg['repeats']}, "
               f"threads={threads or 'Aer default'}, cpus={os.cpu_count()}, "
@@ -220,7 +172,7 @@ def run(full=False, outdir=None, verbose=True, threads=0, repeats=None):
         if not rows:
             continue
         win = fit_window(rows)
-        big = [r for r in rows if r["delta_mb"] > 5]                 # memory below ~5 MiB is noise
+        big = [r for r in rows if r["delta_mb"] > 5]
         fits[c] = {"time_wall": fit_slope([r["n"] for r in win], [r["wall_median_s"] for r in win]),
                    "time_aer": fit_slope([r["n"] for r in win], [r["aer_median_s"] for r in win]),
                    "memory": fit_slope([r["n"] for r in big], [r["delta_mb"] for r in big]) if len(big) >= 2 else None}

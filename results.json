@@ -1,0 +1,24 @@
+{
+  "team": [
+    "2023A7PS0397G",
+    "2023B5A70986G"
+  ],
+  "level_attempted": 3,
+  "versions": {
+    "qiskit": "2.6.1",
+    "qiskit-aer": "0.18.2"
+  },
+  "L1": {
+    "purity_third_state": 0.5
+  },
+  "L2": {
+    "bell_reduced_purity": 0.4999999999999998
+  },
+  "L3": {
+    "purity": 0.11154902155328367,
+    "entropy": 3.5261173924567815,
+    "entropy_A": 3.5533704405920474,
+    "traj_estimate_purity": 0.11142703890800482,
+    "n_traj": 8192
+  }
+}

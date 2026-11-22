@@ -1,17 +1,17 @@
 # QAP Assignment I: Pure vs Mixed States
 
-Team: A = `<name A>` (`<id 1>`), B = `<name B>` (`<id 2>`). Level attempted: 3.
+Team: A = Nihal Krishna Shrivastava (2023B5A70986G), B = Kartik Garg (2023A7PS0397G). Level attempted: 3.
 
 ## Environment
 
-Python 3.11 (tested with 3.11.3 on Windows 10). Install the pinned libraries:
+Python 3.11 (tested with 3.11.3 on Windows 10). Install the libraries:
 
 ```
 pip install -r environment.txt
 ```
 
-`environment.txt` pins qiskit, qiskit-aer, numpy, scipy, matplotlib and psutil (psutil is installed
-together with qiskit-aer; S8 uses it to measure memory).
+`environment.txt` pins qiskit, qiskit-aer, numpy, scipy and matplotlib. S8 also uses psutil to measure
+memory; it is installed as a dependency of qiskit-aer, so it needs no line of its own.
 
 ## Run (single command)
 
@@ -20,8 +20,7 @@ python run_all.py
 ```
 
 Run it from this folder (`python code/run_all.py` from the package root also works). It needs
-`instance.json` for Level 3. It takes a few minutes: S5 about 1 minute, S8 (quick mode) about 1 minute,
-everything else seconds.
+`instance.json` for Level 3. It takes about 4 to 7 minutes, mostly S8; add `--s8 skip` to finish in under a minute. S8 time depends mostly on the machine.
 
 Options (all optional):
 
@@ -38,7 +37,7 @@ A failing step does not stop the others: its traceback is printed, the remaining
 - `results.json`: the schema from the assignment (written here and one folder up, because the
   assignment lists it at package level).
 - `s2_data.json`, `s2_circuit.txt` (S2), `s4_noise_sweep.png` (S4), `s5_data.json`, `s5_error_vs_N.png` (S5),
-  `s7_traj_error.png` (S7), `s8_scaling_quick.json` / `.png` (S8, quick mode).
+  `s7_traj_error.png` (S7), `s8_scaling_quick.json` / `.png` (S8, from the default run; git-ignored).
 
 ## Files
 
@@ -62,11 +61,10 @@ did what.
 
 ## Level 3 instance
 
-`instance.json` was generated with the course script `make_instance.py` using our two student IDs and
-the course salt (the script and the salt are not part of this repository). To regenerate it:
+`instance.json` was generated with the instructor script `make_instance.py` (the script is not part of this repository), using the last 4 digits of ID 2023B5A70986G. To regenerate it:
 
 ```
-python make_instance.py <id 1> <id 2> <salt>
+python make_instance.py 0986
 ```
 
 and save the output as `instance.json` in this folder. `results.json` is then specific to that instance.
@@ -78,9 +76,9 @@ python l3_s8_scaling.py --full
 python l3_s8_scaling.py --full --threads 1 --repeats 3
 ```
 
-These write `s8_scaling.json` / `.png` and `s8_scaling_t1.json` / `.png`, which the report uses. The
-`--threads 1` run separates the algorithm's cost from Aer's multi-threading. Quick runs write
-`s8_scaling_quick*` files, so they never overwrite the full data. Timings and memory limits depend on
+The first command writes `s8_scaling.json` / `.png`, the second `s8_scaling_t1.json` / `.png`. The
+report uses the single-thread `s8_scaling_t1.*` data, which separates the algorithm's cost from Aer's
+multi-threading. Timings and memory limits depend on
 the machine (number of cores, free RAM); the ladders stop by themselves when the next size would not
 fit in free memory.
 
@@ -94,5 +92,4 @@ fit in free memory.
 
 ## Predictions
 
-`../predictions.md` holds the predictions and their comparison with the results. Read the timing note at
-the top of that file: some predictions were written after the corresponding simulations had run.
+`../predictions.md` holds the predictions and their comparison with the results.

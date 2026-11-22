@@ -5,15 +5,14 @@
   ],
   "level_attempted": 3,
   "versions": {
-    "qiskit": "2.6.2",
-    "qiskit-aer": "0.18.4"
+    "qiskit": "2.6.1",
+    "qiskit-aer": "0.18.2"
   },
   "L1": {
     "purity_third_state": 0.5
   },
   "L2": {
-    "bell_reduced_purity": 0.4999999999999998,
-    "s4_max_route_diff": 4.440892098500626e-16
+    "bell_reduced_purity": 0.4999999999999998
   },
   "L3": {
     "purity": 0.11154902155328367,

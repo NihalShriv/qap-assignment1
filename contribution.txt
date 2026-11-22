@@ -1,0 +1,7 @@
+Nihal Krishna Shrivastava (2023B5A70986G):
+Wrote the shared utils.py (density matrices, Kraus channels, partial trace, entropy), S1 (Kartik reviewed and refactored it), S3, S4 and the Q2.4 convention check. Generated and verified the Level 3 instance, and wrote S6, S7 and predictions.md.
+Wrote most of the report: States, Operations, the Level 1 and Level 2 analysis, Q3.1, Q3.2 and A3.1. Reviewed Kartik's S2, S5 and S8 results.
+
+Kartik Garg (2023A7PS0397G):
+Wrote S2, S5 and S8 and run_all.py, restructured the repository and wrote the README.
+Wrote the report parts on Q2.3, A3.2, A3.3 and Q3.3. Reviewed Nihal's results and refactored his S1 code.

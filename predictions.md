@@ -32,7 +32,7 @@ Then add one line after: what you actually saw and whether it matched.
 ## S2 — Circuit consistency (Person B)
 
 **Before:** Statevector and density-matrix simulation should give the same density matrix to floating-point precision (~1e-10). Any difference from global phase drops out in the density matrix.
-**After:** _fill in_
+**After:** Matched. All five routes (statevector, density matrix, Aer statevector, Aer density matrix, NumPy U rho U^dag) give the same density matrix to within 2.6e-16, far inside the 1e-10 tolerance. The raw statevectors from the two simulators differ by 2.5e-16 and have overlap 1, so they agree up to a global phase. Deliberately reversing the qubit order changes rho by 0.23, so the comparison does detect an ordering mistake.
 
 ---
 
@@ -75,7 +75,7 @@ Then add one line after: what you actually saw and whether it matched.
 ## S5 — Dephasing trajectories (Person B)
 
 **Before:** Each single trajectory is a pure state (one Kraus operator applied, then renormalised). The average over N trajectories converges to the exact density-matrix result. Error shrinks as ~1/√N.
-**After:** _fill in_
+**After:** Matched. Every trajectory was a pure state. At p = 0.3 the fitted slope of mean error against N is -0.536 for Aer and -0.484 for the NumPy sampler, close to -0.5, and both sit near the theory curve 2*sqrt(p(1-p)/(pi N)). The error fell from about 0.17 at N = 10 to about 0.003 at N = 30000.
 
 ---
 
@@ -91,4 +91,4 @@ Then add one line after: what you actually saw and whether it matched.
 
 ### S8 — Scaling benchmark (Person B)
 **Before:** Statevector memory scales as 2ⁿ, density-matrix as 4ⁿ. Density matrix becomes significantly slower around n=4 or 5.
-**After:** _fill in_
+**After:** Scaling matched, the slowdown point did not. In the single-thread run (s8_scaling_t1) the fitted log2 slopes are time +1.04 (statevector) and +2.11 (density matrix) against theory 1 and 2, and memory +0.95 and +1.97, with measured memory within 0.6% of the 2^n and 4^n state size at the largest n. The density matrix passed 1 s at n = 11 (2.4 s) and reached 10.9 s and 256 MiB at n = 12, where its ladder ended, while the statevector took 1.4 s at n = 21 and 23.8 s at n = 25 (512 MiB). So the density matrix became slow at n = 10 to 11, later than the n = 4 or 5 I predicted; below n = 8 every run takes only a few milliseconds.

@@ -1,13 +1,3 @@
-"""
-Run every simulation and write results.json.
-
-    python run_all.py                  # highest level possible (3 if instance.json exists, else 2)
-    python run_all.py --level 2        # stop after Level 2
-    python run_all.py --s8 full        # report-grade S8 ladder (slow); --s8 skip to leave S8 out
-
-A failing step does not stop the run: its traceback is printed, the other steps still
-run, results.json is still written, and the exit code is 1.
-"""
 import argparse
 import importlib
 import json
@@ -19,11 +9,11 @@ from pathlib import Path
 
 HERE = Path(__file__).resolve().parent
 sys.path.insert(0, str(HERE))
-os.chdir(HERE)                      # every module writes its figures / json next to the code
+os.chdir(HERE)
 
-TEAM = ["2023A7PS0397G", "2023B5A70986G"]        # TODO: the two student IDs that were used for make_instance.py
+TEAM = ["2023A7PS0397G", "2023B5A70986G"]
 
-REQUIRED = {                        # the keys the results.json schema asks for
+REQUIRED = {
     "L1": ["purity_third_state"],
     "L2": ["bell_reduced_purity"],
     "L3": ["purity", "entropy", "entropy_A", "traj_estimate_purity", "n_traj"],
@@ -38,7 +28,6 @@ def find_instance():
 
 
 def _json_default(o):
-    """Safety net so numpy scalars / arrays / Paths never break json.dump."""
     try:
         import numpy as np
         if isinstance(o, np.generic):
@@ -110,7 +99,7 @@ def main():
                 failures.append(f"{block} keys {missing}")
 
     targets = [HERE / "results.json"]
-    if HERE.name == "code":                  # the spec lists results.json at package level: write both
+    if HERE.name == "code":
         targets.append(HERE.parent / "results.json")
     for out_path in targets:
         with open(out_path, "w") as f:
