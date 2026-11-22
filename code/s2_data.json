@@ -1,0 +1,14 @@
+{
+  "tolerance": 1e-10,
+  "max_rho_diff_vs_B": {
+    "A statevector (quantum_info)": 5.551115123125783e-17,
+    "B density matrix (quantum_info)": 0.0,
+    "C Aer statevector": 2.2247786310271853e-16,
+    "D Aer density_matrix": 2.558937633260452e-16,
+    "E NumPy U rho U^dag": 5.575138480292678e-17
+  },
+  "statevector_overlap_A_C": 0.9999999999999998,
+  "raw_statevector_diff_A_C": 2.482534153247273e-16,
+  "ordering_sensitivity": 0.23484317821184458,
+  "global_phase_demo_vector_gap": 0.46968635642368933
+}
