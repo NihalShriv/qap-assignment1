@@ -116,7 +116,7 @@ def run(verbose=True):
         print(f"  Gotcha: a naive pauli_error([X,Y,Z each p/3]) would be a")
         print(f"  different channel — use depolarizing_error to match O7.")
 
-    return {"s4_max_route_diff": float(max_diff)}
+    return {}
 
 
 if __name__ == "__main__":
