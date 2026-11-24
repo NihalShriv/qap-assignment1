@@ -11,7 +11,7 @@ HERE = Path(__file__).resolve().parent
 sys.path.insert(0, str(HERE))
 os.chdir(HERE)
 
-TEAM = ["2023A7PS0397G", "2023B5A70986G"]
+TEAM = ["2023B5A70986G", "2023A7PS0397G"]
 
 REQUIRED = {
     "L1": ["purity_third_state"],
