@@ -83,7 +83,7 @@ def run(verbose=True):
         print(f"  Reduced 1-qubit: purity={purity(ghz_1q.data):.6f}")
         print("\nQ2.1: The global Bell state is pure, but it is entangled and cannot be written")
         print("as a product state. Tracing out one qubit discards all inter-qubit correlations,")
-        print("leaving rho_A = I/2 — the maximally mixed state with entropy 1 bit. The mixedness")
+        print("leaving rho_A = I/2, the maximally mixed state with entropy 1 bit. The mixedness")
         print("of the subsystem is entirely entanglement-induced, not classical uncertainty.")
         print("\nNumPy partial_trace_np agrees with Qiskit to 1e-10: PASS")
 

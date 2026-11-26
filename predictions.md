@@ -1,11 +1,10 @@
 # Predictions
 
-Write 1–2 sentences per item **before** running the simulation.
-Then add one line after: what you actually saw and whether it matched.
+Each Before line was written before running that simulation, and each After line was added once we had the result.
 
 ---
 
-## S1 — Single-qubit states (Person A)
+## S1: Single-qubit states (Person A)
 
 ### |0⟩
 **Before:** Pure state, purity = 1, Bloch vector (0, 0, 1).
@@ -20,23 +19,23 @@ Then add one line after: what you actually saw and whether it matched.
 **After:** Matched. Purity = 0.5, Bloch = (0, 0, 0). ρ = I/2 as expected.
 
 ### Equal mixture of |+⟩ and |−⟩
-**Before:** Also ρ = I/2, purity = 0.5, same as the |0⟩/|1⟩ mixture — illustrates that different ensembles share one density matrix.
+**Before:** Also ρ = I/2, purity = 0.5, same as the |0⟩/|1⟩ mixture, which shows that different ensembles share one density matrix.
 **After:** Matched. Purity = 0.5, Bloch = (0, 0, 0). Identical ρ to the previous state, confirming ensemble non-uniqueness.
 
 ### Partly mixed state (our choice)
 **Before:** Purity strictly between 0.5 and 1, Bloch vector length between 0 and 1.
-**After:** Matched. 0.8|0⟩ + 0.2|1⟩ mixture gives purity = 0.68, Bloch = (0, 0, +0.6). Both strictly between bounds.
+**After:** Matched. 0.8|0⟩⟨0| + 0.2|1⟩⟨1| gives purity = 0.68, Bloch = (0, 0, +0.6). Both strictly between bounds.
 
 ---
 
-## S2 — Circuit consistency (Person B)
+## S2: Circuit consistency (Person B)
 
 **Before:** Statevector and density-matrix simulation should give the same density matrix to floating-point precision (~1e-10). Any difference from global phase drops out in the density matrix.
 **After:** Matched. All five routes (statevector, density matrix, Aer statevector, Aer density matrix, NumPy U rho U^dag) give the same density matrix to within 2.6e-16, far inside the 1e-10 tolerance. The raw statevectors from the two simulators differ by 2.5e-16 and have overlap 1, so they agree up to a global phase. Deliberately reversing the qubit order changes rho by 0.23, so the comparison does detect an ordering mistake.
 
 ---
 
-## S3 — Entanglement (Person A)
+## S3: Entanglement (Person A)
 
 ### Bell state, trace out qubit 1
 **Before:** The reduced state should be I/2, purity = 0.5, entropy = 1 bit. Maximum mixedness because the full state is pure and maximally entangled. The information sits entirely in the correlations.
@@ -48,7 +47,7 @@ Then add one line after: what you actually saw and whether it matched.
 
 ---
 
-## S4 — Noise sweep (Person A)
+## S4: Noise sweep (Person A)
 
 ### Bit-flip on |+⟩
 **Before:** |+⟩ is an eigenstate of X, so bit-flip leaves it unchanged. Purity stays at 1 for all p.
@@ -72,23 +71,23 @@ Then add one line after: what you actually saw and whether it matched.
 
 ---
 
-## S5 — Dephasing trajectories (Person B)
+## S5: Dephasing trajectories (Person B)
 
 **Before:** Each single trajectory is a pure state (one Kraus operator applied, then renormalised). The average over N trajectories converges to the exact density-matrix result. Error shrinks as ~1/√N.
 **After:** Matched. Every trajectory was a pure state. At p = 0.3 the fitted slope of mean error against N is -0.536 for Aer and -0.484 for the NumPy sampler, close to -0.5, and both sit near the theory curve 2*sqrt(p(1-p)/(pi N)). The error fell from about 0.17 at N = 10 to about 0.003 at N = 30000.
 
 ---
 
-## L3 (fill in once instance.json is generated)
+## L3 (instance 0986)
 
-### S6 — Instance simulation (Person A)
+### S6: Instance simulation (Person A)
 **Before:** Instance 0986: 6 qubits, A = qubits 0-4, B = qubit 5, dephasing p = 0.121 after every gate. Without noise the global state is pure, so S(ρ) = 0, while S(ρ_A) = S(ρ_B) > 0 and at most 1 bit because B is a single qubit (Schmidt rank at most 2). With noise ρ becomes clearly mixed (S(ρ) of a few bits), and by Araki-Lieb S(ρ_A) stays within S(ρ_B) ≤ 1 bit of S(ρ). With noise, Araki-Lieb allows either sign: S(ρ_A) ≥ S(ρ) only if S(B|A) ≤ 0, i.e. if A-B entanglement still outweighs the noise on B, so we expect S(ρ_A) and S(ρ) within 1 bit of each other and are unsure of the sign. The Aer and Kraus routes should agree to about 1e-10.
 **After:** Noiseless: S(ρ) = 0, S(ρ_A) = 1 bit, purity(ρ_A) = 0.5. Noisy: purity = 0.111549021553, S(ρ) = 3.526117392457, S(ρ_A) = 3.553370440592, S(ρ_B) = 1. So S(ρ_A) > S(ρ) in both cases, but with noise only by 0.027 bit; the sign is settled by entanglement only just outweighing the noise. Aer vs Kraus max difference 9.7e-17.
 
-### S7 — Instance trajectories (Person A)
+### S7: Instance trajectories (Person A)
 **Before:** Error vs N should follow ~1/√N on a log-log plot (slope ≈ −0.5). Every single trajectory is pure, so the purity of the N-trajectory average should start near 1 and fall towards the exact value, overshooting it by about (1 − γ)/N.
 **After:** Matched. Fitted slope −0.520 over N = 16 to 8192, close to −0.5, and the errors follow √((1−γ)/N). At N = 8192 the trajectory purity is 0.111427 vs exact 0.111549, a difference of −1.2e-4, well inside the standard error of 1.6e-3; the (1−γ)/N bias of 1.1e-4 is too small to see at this N. Cost: 234 µs per trajectory.
 
-### S8 — Scaling benchmark (Person B)
+### S8: Scaling benchmark (Person B)
 **Before:** Statevector memory scales as 2ⁿ, density-matrix as 4ⁿ. Density matrix becomes significantly slower around n=4 or 5.
-**After:** Scaling matched, the slowdown point did not. In the single-thread run (s8_scaling_t1) the fitted log2 slopes are time +1.04 (statevector) and +2.11 (density matrix) against theory 1 and 2, and memory +0.95 and +1.97, with measured memory within 0.6% of the 2^n and 4^n state size at the largest n. The density matrix passed 1 s at n = 11 (2.4 s) and reached 10.9 s and 256 MiB at n = 12, where its ladder ended, while the statevector took 1.4 s at n = 21 and 23.8 s at n = 25 (512 MiB). So the density matrix became slow at n = 10 to 11, later than the n = 4 or 5 I predicted; below n = 8 every run takes only a few milliseconds.
+**After:** Scaling matched, the slowdown point did not. In the single-thread run (s8_scaling_t1) the fitted log2 slopes are time +1.04 (statevector) and +2.11 (density matrix) against theory 1 and 2, and memory +0.95 and +1.97, with measured memory within 0.6% of the 2^n and 4^n state size at the largest n. The density matrix passed 1 s at n = 11 (2.4 s) and reached 10.9 s and 256 MiB at n = 12, where its ladder ended, while the statevector took 1.4 s at n = 21 and 23.8 s at n = 25 (512 MiB). So the density matrix became slow at n = 10 to 11, later than the n = 4 or 5 we predicted; below n = 8 every run takes only a few milliseconds.

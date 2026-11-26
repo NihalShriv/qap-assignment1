@@ -114,7 +114,7 @@ def run(verbose=True):
         print(f"  Interpretation: depolarizing_error(p,1) == (1-p)*rho + p*I/2")
         print(f"  i.e. Qiskit's parameter = O7's p directly (no 3/4 factor needed).")
         print(f"  Gotcha: a naive pauli_error([X,Y,Z each p/3]) would be a")
-        print(f"  different channel — use depolarizing_error to match O7.")
+        print(f"  different channel; use depolarizing_error to match O7.")
 
     return {}
 
